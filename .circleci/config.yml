@@ -1,9 +1,22 @@
 version: 2.1
 
-orbs:
-  maven: circleci/maven@0.0.12
-
 workflows:
-  maven_test:
+  my-workflow:
     jobs:
-      - maven/test # checkout, build, test, and upload test results
+      - run-tests:
+          context:
+            - org-global
+            - DOCKERHUB_PASSWORD
+
+jobs:
+  run-tests:
+    docker:
+      - image: cimg/base:2020.01
+        auth:
+          username: gheordi
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout
+      - run:
+          name: "echo environment variables from org-global context"
+          command: echo $MY_ENV_VAR
